@@ -1,0 +1,80 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ytsaurus-airflow-provider"
+authors = [
+    { name = "YTsaurus", email = "ilyaibraev@ytsaurus.tech" },
+]
+license = { text = "Apache License 2.0" }
+description = "YTsaurus Apache Airflow provider."
+classifiers = [
+    "Framework :: Apache Airflow",
+    "Framework :: Apache Airflow :: Provider",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dynamic = [
+    "version"
+]
+requires-python = ">=3.8"
+dependencies = [
+    "apache-airflow>=2.9.0",
+    "ytsaurus-client",
+    "ytsaurus-yson",
+    "s3fs==2024.10.0",
+    "apache-airflow-providers-amazon[s3fs]",
+]
+
+[project.urls]
+Homepage = "https://ytsaurus.tech/"
+Source = "https://github.com/ytsaurus/ytsaurus-airflow-provider/"
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.entry-points.apache_airflow_provider]
+provider_info = "ytsaurus_airflow_provider.__init__:get_provider_info"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = { attr = "ytsaurus_airflow_provider.__version__" }
+
+[tool.setuptools.packages.find]
+exclude = [
+    "tests",
+]
+
+[tool.ruff]
+line-length = 127
+indent-width = 4
+target-version = "py38"
+lint.select = ["ALL"]
+lint.ignore = ["ANN401", "COM812", "D100", "D101", "D102", "D103", "D104", "D107", "D203", "D211", "D213", "PGH003", "PLR0913", "PLR2004", "S101", "UP007", "UP009"]
+exclude = ["dev/"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
+[tool.mypy]
+disable_error_code = []
+files = ["ytsaurus_airflow_provider", "tests"]
+
+[[tool.mypy.overrides]]
+module = ["yt.*", "flask_appbuilder.*", "flask_babel.*", "wtforms.*", "testcontainers.core.*"]
+follow_untyped_imports = true
