@@ -1,63 +1,26 @@
-# YTsaurus Airflow provider
+# YTsaurus Airflow Provider
 
+## Provider package
 
-## Documentation
+This is a apache airflow provider package for [YTsaurus](https://ytsaurus.tech/). All classes for this provider package are in `ytsaurus_airflow_provider` python package.
 
-Documenation is available at [YTsaurus Documentation [EN]](https://ytsaurus.tech/docs/en/api/airflow/start) and [[RU]](https://ytsaurus.tech/docs/ru/api/airflow/start).
+Documenation is available at [YTsaurus Documentation [EN]](https://ytsaurus.tech/docs/en/api/airflow/start) or [[RU]](https://ytsaurus.tech/docs/ru/api/airflow/start).
 
-## Installations
+## Installation
 
-### Requirements
-
-- Python 3.8+
-- Airflow 2.9.0+
-
-### Installation from source code
-
-```bash
-pip install .
+You can install this package on top of an existing Airflow 2.9+ installation via pip:
 ```
-
-<!-- ### Installation from PyPI
-
-```bash
 pip install ytsaurus-airflow-provider
-``` -->
-
-## How to try
-
-- Run Airflow
-
-```bash
-cd dev
-make run
 ```
 
-- Follow the instructions from [documentation [EN]](https://ytsaurus.tech/docs/en/api/airflow/userdoc#howtostart) and [[RU]](https://ytsaurus.tech/docs/ru/api/airflow/userdoc#howtostart).
+The package requires `Python 3.8+`.
 
-## How to run tests
+## Requirements
 
-- Install requirements
-
-```bash
-pip install -r dev/requirements.txt
-```
-
-### Style check
-
-```bash
-ruff check
-ruff format
-```
-
-### Type check
-
-```bash
-mypy
-```
-
-### Pytest  
-
-```bash
-pytest .
-```
+PIP package                             | Version required
+----------------------------------------|------------------
+`apache-airflow`                        | `>=2.9.0`
+`ytsaurus-client`                       | `>=0.13.23`
+`ytsaurus-yson`                         | `>=0.4.3`
+`apache-airflow-providers-amazon[s3fs]` | `>=3.0.0`
+`s3fs`                                  | `<=2024.10.0`
