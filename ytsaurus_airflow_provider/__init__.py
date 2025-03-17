@@ -9,7 +9,7 @@ def get_provider_info() -> dict[str, Any]:
     return {
         "package-name": "ytsaurus-airflow-provider",
         "name": "YTsaurus",
-        "description": "YTsaurus Airflow provider.",
+        "description": "`YTsaurus <http://ytsaurus.tech>`__",
         "connection-types": [
             {
                 "connection-type": "ytsaurus_cluster",

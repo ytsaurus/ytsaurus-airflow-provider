@@ -1,0 +1,44 @@
+name: Check
+
+on:
+  push:
+    branches:
+    - "*"
+  workflow_call:
+
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.11, 3.12]
+        airflow-version: [2.9.0, 2.10.5]
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+            python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          sudo apt install libxmlsec1 libxmlsec1-dev python3-venv
+          pip install apache-airflow==${{ matrix.airflow-version }}
+          pip install -r dev/requirements.txt
+
+      - name: Style check
+        run: |
+          ruff check
+          ruff format --check
+
+      - name: Type check
+        run: |
+          mypy
+
+      - name: Pytest
+        run: |
+          airflow db init
+          pytest

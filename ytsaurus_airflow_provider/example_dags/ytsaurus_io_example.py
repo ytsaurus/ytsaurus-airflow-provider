@@ -43,7 +43,7 @@ with DAG(
 
     # The construction is for mypy to understand that `exec_path' is `str`.
     execution_ypath: Union[str, XComArg] = execution_ypath_task()
-    execution_ypath = cast(str, execution_ypath)
+    execution_ypath = cast("str", execution_ypath)
 
     create_node = CreateOperator(
         task_id="create_node",

@@ -4,18 +4,20 @@ import json
 import shlex
 import socket
 import uuid
-from typing import Any, Generator, cast
+from typing import TYPE_CHECKING, Any, Generator, cast
 from unittest.mock import MagicMock
 
 import pytest
 import yt.wrapper
 from airflow.models.connection import Connection
 from airflow.providers.amazon.aws.hooks.base_aws import AwsGenericHook
-from airflow.utils.context import Context
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
 
 from ytsaurus_airflow_provider.hooks.ytsaurus import YTsaurusHook
+
+if TYPE_CHECKING:
+    from airflow.utils.context import Context
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -108,7 +110,7 @@ def context_mock() -> dict[str, MagicMock]:
 
 @pytest.fixture
 def context(context_mock: dict[str, MagicMock]) -> Context:
-    return cast(Context, context_mock)
+    return cast("Context", context_mock)
 
 
 def _get_free_port() -> int:
