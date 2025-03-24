@@ -4,7 +4,7 @@
 
 This is a apache airflow provider package for [YTsaurus](https://ytsaurus.tech/). All classes for this provider package are in `ytsaurus_airflow_provider` python package.
 
-Documenation is available at [YTsaurus Documentation [EN]](https://ytsaurus.tech/docs/en/api/airflow/start) or [[RU]](https://ytsaurus.tech/docs/ru/api/airflow/start).
+Documenation is available at [YTsaurus Documentation [EN]](https://ytsaurus.tech/docs/en/api/airflow/userdoc) or [[RU]](https://ytsaurus.tech/docs/ru/api/airflow/userdoc).
 
 ## Installation
 
