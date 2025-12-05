@@ -89,7 +89,6 @@ class CreateOperator(BaseOperator):
             "int64_node",
             "uint64_node",
             "double_node",
-            "list_node",
             "boolean_node",
             "link",
         ],
