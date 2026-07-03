@@ -80,7 +80,7 @@ class WriteTableOperator(BaseOperator):
         client = hook.get_conn()
         self.log.info("Writing data to table `%s`.", self.path)
 
-        input_stream = self.input_data if self.input_data else self._reader(context)
+        input_stream = self.input_data or self._reader(context)
 
         client.write_table(
             table=self.path,

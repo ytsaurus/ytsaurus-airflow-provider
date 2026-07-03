@@ -92,7 +92,7 @@ def test_read_write_storage_operator(
 
 
 def test_write_fail(node_path: str, context: Context, tmp_path: UPath) -> None:
-    with pytest.raises(ValueError, match="Either `object_storage_path` or `input_data` must be provided, but not both."):
+    with pytest.raises(ValueError, match=r"Either `object_storage_path` or `input_data` must be provided, but not both."):
         WriteTableOperator(
             task_id="test_write_operator",
             path=f"{node_path}/table",
@@ -100,13 +100,13 @@ def test_write_fail(node_path: str, context: Context, tmp_path: UPath) -> None:
             object_storage_path=tmp_path,
         ).execute(context)
 
-    with pytest.raises(ValueError, match="Either `object_storage_path` or `input_data` must be provided, but not both."):
+    with pytest.raises(ValueError, match=r"Either `object_storage_path` or `input_data` must be provided, but not both."):
         WriteTableOperator(
             task_id="test_write_operator",
             path=f"{node_path}/table",
         ).execute(context)
 
-    with pytest.raises(ValueError, match="Cannot write table from object storage when `object_storage_format` is None."):
+    with pytest.raises(ValueError, match=r"Cannot write table from object storage when `object_storage_format` is None."):
         WriteTableOperator(
             task_id="test_write_operator",
             path=f"{node_path}/table",
@@ -115,14 +115,14 @@ def test_write_fail(node_path: str, context: Context, tmp_path: UPath) -> None:
 
 
 def test_read_fail(node_path: str, context: Context, tmp_path: UPath) -> None:
-    with pytest.raises(ValueError, match="Cannot read table to object storage when `object_storage_path` is None."):
+    with pytest.raises(ValueError, match=r"Cannot read table to object storage when `object_storage_path` is None."):
         ReadTableOperator(
             task_id="test_read_operator",
             path=f"{node_path}/table",
             object_storage_format="yson",
         ).execute(context)
 
-    with pytest.raises(ValueError, match="Cannot read table to object storage when `object_storage_format` is None."):
+    with pytest.raises(ValueError, match=r"Cannot read table to object storage when `object_storage_format` is None."):
         ReadTableOperator(
             task_id="test_read_operator",
             path=f"{node_path}/table",

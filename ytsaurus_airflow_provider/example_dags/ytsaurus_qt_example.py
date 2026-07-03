@@ -4,13 +4,14 @@ import uuid
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Union, cast
 
-from airflow import DAG, XComArg
+from airflow import DAG
 from airflow.decorators import task
 from airflow.io.path import ObjectStoragePath
 
 from ytsaurus_airflow_provider.operators import CreateOperator, RunQueryOperator, SetOperator, WriteTableOperator
 
 if TYPE_CHECKING:
+    from airflow import XComArg
     from upath import UPath
 
 base = ObjectStoragePath("s3://ytsaurus-airflow/", conn_id="aws_default")

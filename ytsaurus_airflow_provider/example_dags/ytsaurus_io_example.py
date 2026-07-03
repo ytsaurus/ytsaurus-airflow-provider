@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Union, cast
+from typing import TYPE_CHECKING, Any, Union, cast
 
 import yt.type_info
 import yt.wrapper
-from airflow import DAG, XComArg
+from airflow import DAG
 from airflow.decorators import task
 from airflow.io.path import ObjectStoragePath
 from yt.yson.yson_types import YsonStringProxy
@@ -17,6 +17,9 @@ from ytsaurus_airflow_provider.operators import (
     SetOperator,
     WriteTableOperator,
 )
+
+if TYPE_CHECKING:
+    from airflow import XComArg
 
 base = ObjectStoragePath("s3://ytsaurus-airflow/", conn_id="aws_default")
 
