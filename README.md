@@ -22,6 +22,6 @@ PIP package                             | Version required
 `apache-airflow`                        | `>=2.9.0`
 `ytsaurus-client`                       | `>=0.13.23`
 `ytsaurus-yson`                         | `>=0.4.3`
-`apache-airflow-providers-amazon[s3fs]` | `>=3.0.0`
-`s3fs`                                  | `<=2024.10.0`
+`apache-airflow-providers-amazon[s3fs]` | `any`
+`s3fs`                                  | `>=2023.10.0`
 

@@ -1,17 +1,20 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any, Literal, Sequence, Union
+from typing import TYPE_CHECKING, Any, Literal, Union
 
-from airflow.models import BaseOperator
 from yt.wrapper.format import JsonFormat
 
+from ytsaurus_airflow_provider.common.compat import BaseOperator
 from ytsaurus_airflow_provider.hooks import YTsaurusHook
 
 if TYPE_CHECKING:
-    from airflow.utils.context import Context
+    from collections.abc import Sequence
+
     from yt.wrapper.format import Format
     from yt.wrapper.ypath import YPath
+
+    from ytsaurus_airflow_provider.common.compat import Context
 
 
 class ListOperator(BaseOperator):

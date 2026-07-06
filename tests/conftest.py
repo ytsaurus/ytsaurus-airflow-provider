@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import json
+import re
 import shlex
 import socket
 import uuid
-from typing import TYPE_CHECKING, Any, Generator, cast
+from typing import TYPE_CHECKING, Any, cast
 from unittest.mock import MagicMock
 
 import pytest
@@ -12,12 +13,14 @@ import yt.wrapper
 from airflow.models.connection import Connection
 from airflow.providers.amazon.aws.hooks.base_aws import AwsGenericHook
 from testcontainers.core.container import DockerContainer
-from testcontainers.core.waiting_utils import wait_for_logs
+from testcontainers.core.wait_strategies import LogMessageWaitStrategy
 
 from ytsaurus_airflow_provider.hooks.ytsaurus import YTsaurusHook
 
 if TYPE_CHECKING:
-    from airflow.utils.context import Context
+    from collections.abc import Generator
+
+    from ytsaurus_airflow_provider.common.compat import Context
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -42,8 +45,8 @@ def setup_storage() -> Generator[None, None, None]:
         .with_bind_ports(8333, free_port)
         .with_command("server -s3 -master.raftHashicorp")  # `raftHashicorp` increases setup speed
         .with_name("s3")
-    ) as container:
-        wait_for_logs(container, ".*Start Seaweed S3 API Server.*")
+        .waiting_for(LogMessageWaitStrategy(re.compile(r".*Start Seaweed S3 API Server.*")))
+    ) as _:
         yield
     mp.undo()
 
@@ -76,8 +79,8 @@ def yt_client() -> Generator[yt.wrapper.YtClient, None, None]:
         .with_bind_ports(80, free_port)
         .with_command(shlex.join(yt_docker_args))
         .with_name("yt")
-    ) as container:
-        wait_for_logs(container, "Local YT started")
+        .waiting_for(LogMessageWaitStrategy("Local YT started"))
+    ) as _:
         yield client
     mp.undo()
 

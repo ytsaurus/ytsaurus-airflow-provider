@@ -14,8 +14,9 @@ from ytsaurus_airflow_provider.operators.ytsaurus_io import (
 if TYPE_CHECKING:
     from unittest.mock import MagicMock
 
-    from airflow.utils.context import Context
     from upath import UPath
+
+    from ytsaurus_airflow_provider.common.compat import Context
 
 for operator_cls in [ReadTableOperator, WriteTableOperator]:
     patch_operator_exec(operator_cls)

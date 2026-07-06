@@ -6,11 +6,8 @@ from typing import TYPE_CHECKING, Any, Union, cast
 
 import yt.type_info
 import yt.wrapper
-from airflow import DAG
-from airflow.decorators import task
-from airflow.io.path import ObjectStoragePath
-from yt.yson.yson_types import YsonStringProxy
 
+from ytsaurus_airflow_provider.common.compat import DAG, ObjectStoragePath, task
 from ytsaurus_airflow_provider.operators import (
     CreateOperator,
     ReadTableOperator,
@@ -72,16 +69,12 @@ with DAG(
 
     attributes = {"schema": schema}
 
-    unserializable_value = YsonStringProxy()
-    unserializable_value._bytes = b"\xfa"  # type: ignore  # noqa: SLF001
-
-    example_data: list[dict[str, int | str | bytes | YsonStringProxy]] = [
+    example_data: list[dict[str, int | str | bytes]] = [
         {"key": 1, "value": "1", "foo": 123},
         {"key": 2, "value": "2\n2", "foo": "hello world"},
         {"key": 3, "value": "3\t3\t3", "foo": b"123123"},
         {"key": 4, "value": "4\n4\t4", "foo": b"hello/\\world"},
         {"key": 5, "value": "\n\n", "foo": b'{"b"="\\xfb";}'},
-        {"key": 6, "value": "\t\t", "foo": unserializable_value},
     ]
 
     create_table = CreateOperator(

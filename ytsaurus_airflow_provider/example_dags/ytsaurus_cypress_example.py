@@ -4,9 +4,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Union, cast
 
-from airflow import DAG
-from airflow.decorators import task
-
+from ytsaurus_airflow_provider.common.compat import DAG, task
 from ytsaurus_airflow_provider.operators import (
     CreateOperator,
     GetOperator,

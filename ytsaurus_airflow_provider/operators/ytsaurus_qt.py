@@ -6,16 +6,17 @@ from typing import TYPE_CHECKING, Any, Literal
 
 import yt.wrapper
 import yt.wrapper.query_commands
-from airflow.models import BaseOperator
 
+from ytsaurus_airflow_provider.common.compat import BaseOperator
 from ytsaurus_airflow_provider.hooks import YTsaurusHook
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
     import yt.yson.yson_types
-    from airflow.utils.context import Context
     from upath import UPath
+
+    from ytsaurus_airflow_provider.common.compat import Context, ObjectStoragePath
 
 
 class RunQueryOperator(BaseOperator):
@@ -42,7 +43,7 @@ class RunQueryOperator(BaseOperator):
         annotations: None | dict[str, Any] = None,
         access_control_objects: None | list[str] = None,
         sync: bool = True,
-        object_storage_paths: list[None | UPath] | None = None,
+        object_storage_paths: list[None | UPath | ObjectStoragePath] | None = None,
         ytsaurus_conn_id: str = YTsaurusHook.default_conn_name,
         **kwargs: Any,
     ) -> None:
