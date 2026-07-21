@@ -2,33 +2,48 @@ name: Check
 
 on:
   push:
-    branches:
-    - "*"
   workflow_call:
-
 
 jobs:
   check:
     strategy:
+      fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, 3.11, 3.12]
-        airflow-version: [2.9.0, 2.10.5]
+        python-version: ["3.10", "3.12"]
+        airflow-version: ["2.9.0", "2.10.5", "3.2.2"]
     name: Check
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
             python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install libxmlsec1 libxmlsec1-dev python3-venv
-          pip install apache-airflow==${{ matrix.airflow-version }}
-          pip install -r dev/requirements.txt
+          sudo apt install libxmlsec1 libxmlsec1-dev python3-venv curl
+
+          python -m pip install --upgrade pip
+
+          CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
+          curl -sS "${CONSTRAINT_URL}" > constraints.txt
+
+          sed -i '/^decorator==/d' constraints.txt
+          sed -i '/^tqdm==/d' constraints.txt
+          sed -i '/^ruff==/d' constraints.txt
+          sed -i '/^mypy==/d' constraints.txt
+          sed -i '/^pytest==/d' constraints.txt
+
+          pip install apache-airflow==${{ matrix.airflow-version }} -c constraints.txt
+          pip install -r dev/requirements.txt -c constraints.txt
+          pip install kubernetes
 
       - name: Style check
         run: |
@@ -41,5 +56,17 @@ jobs:
 
       - name: Pytest
         run: |
-          airflow db init
-          pytest
+          if [[ "${{ matrix.airflow-version }}" == 2.* ]]; then
+            airflow db init
+          else
+            airflow db migrate
+          fi
+          pytest --junitxml=report.xml
+
+      - name: Test report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Pytest (${{ matrix.python-version }}, airflow ${{ matrix.airflow-version }})
+          path: report.xml
+          reporter: java-junit

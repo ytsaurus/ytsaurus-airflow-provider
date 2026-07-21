@@ -9,7 +9,8 @@ if TYPE_CHECKING:
     from unittest.mock import MagicMock
 
     import yt.wrapper as yt
-    from airflow.utils.context import Context
+
+    from ytsaurus_airflow_provider.common.compat import Context
 
 
 for operator_cls in [RunQueryOperator]:

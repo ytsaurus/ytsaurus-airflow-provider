@@ -2,11 +2,9 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Union, cast
+from typing import TYPE_CHECKING, Any, Union, cast
 
-from airflow import DAG, XComArg
-from airflow.decorators import task
-
+from ytsaurus_airflow_provider.common.compat import DAG, task
 from ytsaurus_airflow_provider.operators import (
     CreateOperator,
     GetOperator,
@@ -16,6 +14,9 @@ from ytsaurus_airflow_provider.operators import (
     SetOperator,
     WriteTableOperator,
 )
+
+if TYPE_CHECKING:
+    from airflow import XComArg
 
 default_args = {
     "owner": "airflow",

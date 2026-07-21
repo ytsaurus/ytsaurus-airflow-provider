@@ -1,16 +1,20 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any, Literal, Sequence
+from typing import TYPE_CHECKING, Any, Literal, Union
 
-from airflow.models import BaseOperator
+from yt.wrapper.format import JsonFormat
 
+from ytsaurus_airflow_provider.common.compat import BaseOperator
 from ytsaurus_airflow_provider.hooks import YTsaurusHook
 
 if TYPE_CHECKING:
-    from airflow.utils.context import Context
+    from collections.abc import Sequence
+
     from yt.wrapper.format import Format
     from yt.wrapper.ypath import YPath
+
+    from ytsaurus_airflow_provider.common.compat import Context
 
 
 class ListOperator(BaseOperator):
@@ -30,7 +34,7 @@ class ListOperator(BaseOperator):
         path: str | YPath,
         max_size: None | int = None,
         absolute: None | bool = None,
-        attributes: None | dict[str, Any] = None,
+        attributes: Union[list[str], tuple, None] = None,
         sort: bool = True,
         read_from: None | str = None,
         ytsaurus_conn_id: str = YTsaurusHook.default_conn_name,
@@ -53,7 +57,7 @@ class ListOperator(BaseOperator):
             client.list(
                 path=self.path,
                 max_size=self.max_size,
-                format="json",
+                format=JsonFormat(),
                 absolute=self.absolute,
                 attributes=self.attributes,
                 sort=self.sort,
@@ -80,18 +84,7 @@ class CreateOperator(BaseOperator):
     def __init__(
         self,
         *,
-        node_type: Literal[
-            "table",
-            "file",
-            "map_node",
-            "document",
-            "string_node",
-            "int64_node",
-            "uint64_node",
-            "double_node",
-            "boolean_node",
-            "link",
-        ],
+        node_type: Literal["table", "file", "map_node", "list_node", "document"],
         path: str | YPath,
         recursive: bool = False,
         ignore_existing: bool = False,
@@ -219,8 +212,8 @@ class GetOperator(BaseOperator):
         *,
         path: str | YPath,
         max_size: None | int = None,
-        attributes: None | dict[str, Any] = None,
-        read_from: None | str = None,
+        attributes: Union[list[str], tuple, None] = None,
+        read_from: None | Literal["cache"] = None,
         ytsaurus_conn_id: str = YTsaurusHook.default_conn_name,
         **kwargs: Any,
     ) -> None:
@@ -240,7 +233,7 @@ class GetOperator(BaseOperator):
                 path=self.path,
                 max_size=self.max_size,
                 attributes=self.attributes,
-                format="json",
+                format=JsonFormat(),
                 read_from=self.read_from,
             ).decode()
         )

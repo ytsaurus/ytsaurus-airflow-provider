@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Any, Generator, Sequence
+from typing import TYPE_CHECKING, Any
 
-from airflow.models import BaseOperator
-
+from ytsaurus_airflow_provider.common.compat import BaseOperator
 from ytsaurus_airflow_provider.hooks import YTsaurusHook
 
 if TYPE_CHECKING:
-    from airflow.utils.context import Context
+    from collections.abc import Generator, Sequence
+
     from upath import UPath
     from yt.wrapper.format import Format
     from yt.wrapper.ypath import YPath
+
+    from ytsaurus_airflow_provider.common.compat import Context, ObjectStoragePath
 
 
 READ_BUFFER_SIZE = 1024 * 1024
@@ -34,7 +36,7 @@ class WriteTableOperator(BaseOperator):
         *,
         path: str | YPath,
         input_data: Any | None = None,
-        object_storage_path: None | UPath = None,
+        object_storage_path: None | UPath | ObjectStoragePath = None,
         object_storage_format: None | str | Format = None,
         table_writer: dict[str, Any] | None = None,
         max_row_buffer_size: int | None = None,
@@ -80,7 +82,7 @@ class WriteTableOperator(BaseOperator):
         client = hook.get_conn()
         self.log.info("Writing data to table `%s`.", self.path)
 
-        input_stream = self.input_data if self.input_data else self._reader(context)
+        input_stream = self.input_data or self._reader(context)
 
         client.write_table(
             table=self.path,
@@ -111,7 +113,7 @@ class ReadTableOperator(BaseOperator):
         self,
         *,
         path: str | YPath,
-        object_storage_path: None | UPath = None,
+        object_storage_path: None | UPath | ObjectStoragePath = None,
         object_storage_format: None | str | Format = None,
         table_reader: None | dict[str, Any] = None,
         control_attributes: None | dict[str, Any] = None,

@@ -15,8 +15,6 @@ description = "YTsaurus Apache Airflow provider."
 classifiers = [
     "Framework :: Apache Airflow",
     "Framework :: Apache Airflow :: Provider",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -24,13 +22,14 @@ classifiers = [
 dynamic = [
     "version"
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "apache-airflow>=2.9.0",
     "ytsaurus-client>=0.13.23",
     "ytsaurus-yson>=0.4.3",
-    "apache-airflow-providers-amazon[s3fs]>=3.0.0",
-    "s3fs<=2024.10.0",
+    "apache-airflow-providers-amazon[s3fs]",
+    "s3fs>=2023.10.0",
+    "packaging",
 ]
 
 [project.urls]
@@ -56,11 +55,11 @@ exclude = [
 ]
 
 [tool.ruff]
-line-length = 127
+line-length = 200
 indent-width = 4
-target-version = "py38"
+target-version = "py310"
 lint.select = ["ALL"]
-lint.ignore = ["ANN401", "COM812", "D100", "D101", "D102", "D103", "D104", "D107", "D203", "D211", "D213", "PGH003", "PLR0913", "PLR2004", "S101", "UP007", "UP009"]
+lint.ignore = ["AIR311", "ANN401", "COM812", "D100", "D101", "D102", "D103", "D104", "D107", "D203", "D211", "D213", "PGH003", "PLC0415", "PLR0913", "PLR2004", "S101", "UP007", "UP009", "UP045"]
 exclude = ["dev/"]
 
 [tool.ruff.format]
@@ -76,5 +75,22 @@ disable_error_code = []
 files = ["ytsaurus_airflow_provider", "tests"]
 
 [[tool.mypy.overrides]]
-module = ["yt.*", "flask_appbuilder.*", "flask_babel.*", "wtforms.*", "testcontainers.core.*"]
+module = ["yt.*", "testcontainers.core.*"]
 follow_untyped_imports = true
+
+[[tool.mypy.overrides]]
+# flask_appbuilder/flask_babel/wtforms are only pulled in by Airflow's optional webserver/FAB
+# extra and are not installed in every environment (e.g. bare `apache-airflow` without the UI).
+module = ["flask_appbuilder.*", "flask_babel.*", "wtforms.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# `airflow.sdk` is only available on Airflow 3.x; CI type-checks against 2.x, where the
+# module genuinely does not exist, so the import is unresolvable rather than merely untyped.
+module = [
+    "airflow.sdk",
+    "airflow.sdk.*",
+    "airflow.dag_processing.dagbag",
+    "airflow.models.dagbundle",
+]
+ignore_missing_imports = true
