@@ -59,7 +59,8 @@ line-length = 200
 indent-width = 4
 target-version = "py310"
 lint.select = ["ALL"]
-lint.ignore = ["AIR311", "ANN401", "COM812", "D100", "D101", "D102", "D103", "D104", "D107", "D203", "D211", "D213", "PGH003", "PLC0415", "PLR0913", "PLR2004", "S101", "UP007", "UP009", "UP045"]
+lint.ignore = ["AIR311", "ANN401", "COM812", "CPY001", "D100", "D101", "D102", "D103", "D104", "D107", "D203", "D211", "D213", "PGH003", "PLC0415", "PLR0913", "PLR2004", "S101", "UP007", "UP009", "UP045"]
+lint.per-file-ignores = { "tests/**" = ["PLR0917"] }
 exclude = ["dev/"]
 
 [tool.ruff.format]
